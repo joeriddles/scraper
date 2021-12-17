@@ -15,14 +15,25 @@ services:
   worker:
     hostname: worker
     entrypoint: celery
-    command: ["-A", "app.worker", "worker", "-l", "info", "-n", "%h", "--events", "-B"]
+    command:
+      [
+        "-A",
+        "app.worker",
+        "worker",
+        "-l",
+        "info",
+        "-n",
+        "%h",
+        "--events",
+        "-B"
+      ]
     depends_on:
       - queue
 
   flower:
     hostname: flower
     image: mher/flower
-    command: ["celery", "flower"]
+    command: [ "celery", "flower" ]
     environment:
       CELERY_BROKER_URL: amqp://guest@queue//
     ports:
