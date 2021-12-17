@@ -1,0 +1,16 @@
+version: '3.4'
+
+services:
+  app:
+    image: houses:latest
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile
+    command: ["-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+    volumes:
+      - ../:/app
+
+  worker:
+    image: houses:latest
+    volumes:
+      - ../:/app

@@ -2,6 +2,7 @@
     "python.pythonPath": ".venv\\Scripts\\python.exe",
     "python.formatting.provider": "black",
     "editor.formatOnSave": true,
+    "python.linting.pylintEnabled": true,
     "editor.codeActionsOnSave": {
         "source.organizeImports": true
     }

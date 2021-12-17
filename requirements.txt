@@ -1,2 +1,5 @@
 beautifulsoup4
+celery[librabbitmq]
+fastapi
 requests
+uvicorn[standard]
