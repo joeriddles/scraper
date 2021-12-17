@@ -28,6 +28,7 @@ class DbService(Generic[DT]):
 
     def __enter__(self) -> DbService:
         self.session = self._create_session()
+        return self
 
     def __exit__(self, _, __, ___) -> None:
         self.session.close()

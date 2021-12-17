@@ -2,12 +2,17 @@ import datetime
 import logging
 import os
 import sys
+from pathlib import Path
 from typing import Optional
 
 import fastapi
+from fastapi.templating import Jinja2Templates
 
-from app import db, scraper, worker
+from app import db, worker
 from app.db_service import DbService
+from app.models.item import Item
+
+BASE_PATH = Path(__file__).resolve().parent
 
 
 def configure_logging():
@@ -36,22 +41,41 @@ configure_logging()
 app = fastapi.FastAPI()
 
 
+templates_path = os.path.join(BASE_PATH, "templates")
+templates = Jinja2Templates(templates_path)
+
+
+api_router = fastapi.APIRouter(
+    prefix="/api",
+    tags=["api"],
+)
+app.include_router(api_router)
+
+
 @app.on_event("startup")
 def on_startup():
     db.init()
 
 
 @app.get("/", response_class=fastapi.responses.HTMLResponse)
-def index():
-    return "<html>Hello world 👋</html>"
+def index(request: fastapi.Request):
+    with DbService(Item) as db_service:
+        items = db_service.list()
+    return templates.TemplateResponse(
+        "index.html",
+        {
+            "request": request,
+            "items": items,
+        },
+    )
 
 
-@app.get("/scrape/")
+@api_router.get("/scrape/")
 def scrape(url: Optional[str] = None):
     worker.scrape.apply_async((url,))
 
 
-@app.get("/items/")
+@api_router.get("/items/")
 def items():
     with DbService() as db_service:
         return db_service.list()
