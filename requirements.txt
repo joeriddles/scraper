@@ -2,4 +2,5 @@ beautifulsoup4
 celery[librabbitmq]
 fastapi
 requests
+sqlmodel
 uvicorn[standard]

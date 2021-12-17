@@ -5,8 +5,6 @@ services:
     hostname: app
     ports:
       - 8000:8000
-    depends_on:
-      - queue
 
   queue:
     hostname: queue
@@ -27,8 +25,6 @@ services:
         "--events",
         "-B"
       ]
-    depends_on:
-      - queue
 
   flower:
     hostname: flower
@@ -38,5 +34,3 @@ services:
       CELERY_BROKER_URL: amqp://guest@queue//
     ports:
       - 5555:5555
-    depends_on:
-      - queue

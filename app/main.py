@@ -6,7 +6,8 @@ from typing import Optional
 
 import fastapi
 
-from . import scraper, worker
+from app import db, scraper, worker
+from app.db_service import DbService
 
 
 def configure_logging():
@@ -35,6 +36,11 @@ configure_logging()
 app = fastapi.FastAPI()
 
 
+@app.on_event("startup")
+def on_startup():
+    db.init()
+
+
 @app.get("/", response_class=fastapi.responses.HTMLResponse)
 def index():
     return "<html>Hello world 👋</html>"
@@ -47,5 +53,5 @@ def scrape(url: Optional[str] = None):
 
 @app.get("/items/")
 def items():
-    with scraper.connect() as cursor:
-        return scraper.list_items(cursor)
+    with DbService() as db_service:
+        return db_service.list()
