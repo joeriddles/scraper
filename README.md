@@ -18,3 +18,5 @@ Ngrok
 ```
 ngrok http 8000
 ```
+
+> Inspect `ngrok` traffic at http://localhost:4040/
